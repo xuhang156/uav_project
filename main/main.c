@@ -91,6 +91,9 @@ void restart()
 
 void app_main(void)
 {
-    vTaskDelay(1000 / portTICK_PERIOD_MS);
-    show_mpu6050_data();
+    while(1)
+    {
+        vTaskDelay(1000 / portTICK_PERIOD_MS);
+        show_mpu6050_data();
+    }
 }
