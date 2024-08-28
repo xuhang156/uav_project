@@ -4,7 +4,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "esp_system.h"
-#include "esp_spi_flash.h"
+#include "spi_flash_mmap.h"
+#include "esp_chip_info.h"
 #include "mpu6050.h"
 
 #define I2C_MASTER_SCL_IO 22      /*!< gpio number for I2C master clock */
@@ -35,13 +36,11 @@ static void i2c_bus_init(void)
  */
 static void i2c_sensor_mpu6050_init(void)
 {
-    esp_err_t ret;
-
     i2c_bus_init();
     mpu6050 = mpu6050_create(I2C_MASTER_NUM, MPU6050_I2C_ADDRESS);
 
-    ret = mpu6050_config(mpu6050, ACCE_FS_4G, GYRO_FS_500DPS);
-    ret = mpu6050_wake_up(mpu6050);
+    mpu6050_config(mpu6050, ACCE_FS_4G, GYRO_FS_500DPS);
+    mpu6050_wake_up(mpu6050);
 }
 
 void show_mpu6050_data()
@@ -82,11 +81,6 @@ void hardware_info(void)
             (chip_info.features & CHIP_FEATURE_BLE) ? "/BLE" : "");
 
     printf("silicon revision %d, ", chip_info.revision);
-
-    printf("%dMB %s flash\n", spi_flash_get_chip_size() / (1024 * 1024),
-            (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
-
-    printf("Minimum free heap size: %d bytes\n", esp_get_minimum_free_heap_size());
 }
 
 void restart()
