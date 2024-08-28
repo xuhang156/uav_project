@@ -1,0 +1,4 @@
+[wokwi]
+version = 1
+elf = "./build/ledc.elf"
+firmware = "./build/ledc.bin"
